@@ -17,6 +17,9 @@ import InputBase from '@material-ui/core/InputBase';
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -42,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(3),
       width: 'auto',
     },
+    [theme.breakpoints.down('sm')]: {
+      width: '50%',
+    },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -51,9 +57,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+ 
   },
   inputRoot: {
     color: 'inherit',
+    [theme.breakpoints.down('sm')]: {
+      display: 'block',
+    },
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -66,9 +76,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   sectionDesktop: {
-    display: 'none',
+    display: 'block',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        display: 'block',
+      },
     },
   },
   sectionMobile: {
@@ -76,7 +89,16 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
+  typeinput:{
+    display:'flex',
+    [theme.breakpoints.down('sm')]: {
+      display: 'block',
+    },
+  }
 }));
 
 function getUnique(arr, comp) { //la jib l unique types tabaa l restos la hottoun bl dropdown list
@@ -147,7 +169,7 @@ export default function PrimarySearchAppBar() {
                
 
         <NativeSelect onChange={event => dispatch({type: "TYPE_CHOSEN",
-                payload:event.target.value    })} name="age" className={classes.selectEmpty} inputProps={{ 'aria-label': 'type' }}>
+                payload:event.target.value    })} name="age" className={classes.typeinput} inputProps={{ 'aria-label': 'type' }}>
           <option value="">None</option>
           {RestoTypesList.map((types)=>(
              <option key={types.type} value={types.type}>{types.type}</option>

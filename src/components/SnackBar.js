@@ -36,7 +36,7 @@ export default function CustomizedSnackbars() {
     <div className={classes.root}>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          Error! couldn't find data 
+          Error!
         </Alert>
       </Snackbar>
      

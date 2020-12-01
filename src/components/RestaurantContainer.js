@@ -1,11 +1,10 @@
-import React, {useEffect,useState} from 'react';
+import React, {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PrimarySearchAppBar from './PrimarySearcAppBar';
 import SnackBar from './SnackBar';
 import _ from 'lodash';
-import { GetRestoList } from '../redux/actions/RestoAction';
 import Typography from '@material-ui/core/Typography';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ListItem from '@material-ui/core/ListItem';
 import Paper from '@material-ui/core/Paper';
@@ -13,8 +12,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import List from '@material-ui/core/List';
 import Paginating from './Paginating';
-import { GetSearchInput } from '../redux/actions/SearchAction.js';
-import { GetTypeChosen } from '../redux/actions/TypeAction';
 import  Checkbox  from '@material-ui/core/Checkbox';
 import AddVisitAction from '../redux/actions/AddVisitAction';
 
@@ -27,13 +24,16 @@ const useStyles = makeStyles((theme) => ({
 	  padding: theme.spacing(10),
 	  textAlign: 'center',
 	  color: theme.palette.text.secondary,
+	  [theme.breakpoints.down('sm')]: {
+		width:"100%",
+		justify: 'center',
+		textAlign: 'center',
+	  },
 	},
-	search: {
-		marginLeft:'50%',
-		
-		display: 'flex',
-		borderRadius: theme.shape.borderRadius,
-		backgroundColor: fade(theme.palette.common.white, 0.50),
+	gridcontent: {
+		[theme.breakpoints.down('sm')]: {
+			display: 'block',
+		  },
 	},
   }));
 
@@ -43,9 +43,6 @@ const useStyles = makeStyles((theme) => ({
 function ShowRestos({resto,index}){
 	const dispatch=useDispatch();
 	const classes = useStyles();
-	const FetchData = () => {
-		dispatch(GetRestoList())}
-	
 	const [open, setOpen] = React.useState(false);
 	const handleClickOpen = () => {
 	  setOpen(true);
@@ -53,61 +50,66 @@ function ShowRestos({resto,index}){
 	const handleClose = () => {
 	  setOpen(false);
 	};
+
 	const RestoList = useSelector(state =>state.RestoList);
-	useEffect(() =>{
-		FetchData()},[])
-
-
 
 
 	const AddVisit = (buttonInfo) =>{
 	
-            const today =+ new Date();
+		if(buttonInfo.target.checked){
+            const today = new Date();
             let restodata={};
             for(resto of RestoList.data){
               if(String(resto.id)===String(buttonInfo.target.value)){
                   restodata=resto;
               }
             }
-            let restaurant = { "visitdate": today ,"restaurant": restodata} ;
+			let restaurant = { "visitdate": today ,"restaurant": restodata} ;
+			try{
 		dispatch(AddVisitAction(restaurant));
-		
+		console.log("new visit added")
+			}catch(error){
+				<SnackBar/>
+				console.log("data not added");
+			}
+		}
 		
 		
 	}
 
 
   
-  return ( 	<Grid item xs={4} >
+  return ( 	<Grid item xs={4} className={classes.gridcontent}>
 				<Paper className={classes.paper} onClick={handleClickOpen}>
-				 	<img width="160px" height="100px" src={"../restopics/"+resto.name+".jpg" } alt="couldn't load image" ></img>
-					<Typography variant="h4" color="default">{resto.name} </Typography>
+				 	<img width="160px" height="100px" src={"../restopics/"+resto.name+".jpg" } alt="couldn't load" ></img>
+					<Typography variant="h4">{resto.name} </Typography>
 					
   
 				</Paper>
 				<Dialog value={resto.name} onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={resto.name}>
-					<DialogTitle>Restaurant Information</DialogTitle>
+					<DialogTitle> <Typography variant="h3">Restaurant Information </Typography></DialogTitle>
 				 	<List>
 				 		<ListItem>
-						Name: {resto.name}
+						 <Typography variant="h4" >Name: </Typography><Typography variant="h5">{resto.name} </Typography>
 						 </ListItem>
 				 		<ListItem>
-						Type: {resto.type}
+						 <Typography variant="h4" >Type</Typography><Typography variant="h5">{resto.type} </Typography>
 				 		</ListItem>
 				 		<ListItem>
-					 	Cost for two: {resto.cost} $
+					 	<Typography variant="h4" >Cost for two: </Typography><Typography variant="h5">{resto.cost}$ </Typography>
 				 		</ListItem>
 				 		<ListItem>
-						Address: {resto.address}
+						 <Typography variant="h4" >Address: </Typography><Typography variant="h5">{resto.address} </Typography>
 						 </ListItem>
 
 				 		<ListItem>
-						 Number: {resto.number}
+						 <Typography variant="h4" >Number: </Typography><Typography variant="h5">{resto.number} </Typography>
 				 		</ListItem>
 						 <ListItem>
+							 <Typography variant="h5">
 								Check to save a visit today
-								  <Checkbox   variant="outlined" className={resto.name} key={resto.id}  value={resto.id} onClick={AddVisit}    variant="contained" color="primary">Check Visit</Checkbox> 
-								  
+								  <Checkbox  className={resto.name} key={resto.id}  value={resto.id} onClick={AddVisit}    variant="contained" color="primary">Check Visit</Checkbox> 
+								  </Typography>
 						 
 						 </ListItem>
 				 	</List>
@@ -119,34 +121,10 @@ function ShowRestos({resto,index}){
 
 
 function RestaurantContainer(){
-	const classes = useStyles();
 
-	const dispatch = useDispatch();
-	const RestoList = useSelector(state =>state.RestoList);
-	useEffect(() =>{
-		FetchData()
-		},[])
-	const FetchData = () => {
-		dispatch(GetRestoList())}
-
-
-	const SearchInput=useSelector(state=>state.search);
-	useEffect(()=>{
-		FetchInput()
-	},[])
-
-	const FetchType = () => {
-		dispatch(GetTypeChosen())}
-	const FetchInput=()=>{
-		dispatch(GetSearchInput())
-	}
-	const TypeChosen=useSelector(state=>state.type);
-	useEffect(()=>{
-		FetchType()
-	},[])
-
-	
-
+	const RestoList = useSelector(state =>state.RestoList); 
+	const SearchInput=useSelector(state=>state.search); //search input
+	const TypeChosen=useSelector(state=>state.type); //type input
 	const [currentPage,setCurrentPage]=useState(1); //kermel kel awal 6 ykuno bnafes l page
 	const [postsPerPage,setPostsPerPage]=useState(6);
 
@@ -155,10 +133,10 @@ function RestaurantContainer(){
 	
 	const paginate= (pageNumber) => setCurrentPage(pageNumber); //pagination numbers
 
-
+	const classes = useStyles();
 
 	const showData =  () => {
-		if(!_.isEmpty(RestoList.data)){ //hon am shuf l array l jebto mnl restoaction eza fade
+		if(!_.isEmpty(RestoList.data)){ //hon am shuf l data l jebta mnl restoaction eza fadie
 			return RestoList.data.filter((resto)=>{
 				if(TypeChosen.data===""){
 					return resto
@@ -192,7 +170,7 @@ function RestaurantContainer(){
 		<div> 	
 			<PrimarySearchAppBar></PrimarySearchAppBar>	
 			<Typography variant="h2">Available Restaurants</Typography>
-			<Grid container spacing={1}>
+			<Grid container spacing={1} className={classes.gridcontent}>
 				{showData()}
 			</Grid>
 			<Paginating postsPerPage={postsPerPage} totalPosts={RestoList.data.length} paginate={paginate}/>
