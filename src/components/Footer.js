@@ -6,7 +6,7 @@ const Footer = () => {
         <div style={{position: 'fixed', bottom: '0px', paddingTop: '10px',
                      paddingBottom: '10px', width: '100%', textAlign: 'center', backgroundColor: 'white'}}>
             <Typography>
-            &copy; CME-Elie Marouny
+            &copy; Resto-Elie Marouny
             </Typography>
         </div>
     )

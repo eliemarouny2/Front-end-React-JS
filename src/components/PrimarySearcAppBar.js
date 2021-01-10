@@ -146,7 +146,7 @@ export default function PrimarySearchAppBar() {
       <AppBar position="static" color="default">
         <Toolbar>
           <RestaurantSharpIcon/>
-          <Typography className={classes.title} variant="h6" noWrap>CME-Restaurants Project</Typography>
+          <Typography className={classes.title} variant="h6" noWrap>Restaurants Project</Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchSharpIcon color="secondary"/>
